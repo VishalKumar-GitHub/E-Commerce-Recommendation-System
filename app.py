@@ -1,4 +1,4 @@
-streamlit run app.pystreamlit run app.py"""Streamlit product recommendation app (content-based, TF-IDF).
+"""Streamlit product recommendation app (content-based, TF-IDF).
 
 Run locally:   streamlit run app.py
 Deploy:        push to GitHub, connect the repo on share.streamlit.io
