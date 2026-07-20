@@ -18,6 +18,16 @@ LEGACY_DATA_PATH = "products.csv"
 
 st.set_page_config(page_title="Product Recommender", page_icon="🛍️", layout="wide")
 
+st.markdown(
+    """
+    <div style='padding:24px 32px; border-radius:24px; background:linear-gradient(135deg, #4b6cb7 0%, #182848 100%); color:white;'>
+        <h1 style='margin:0; font-size:2.6rem;'>Discover products with rich images</h1>
+        <p style='margin:12px 0 0; font-size:1.05rem; max-width:760px; line-height:1.5;'>Browse curated recommendations and product cards with attractive product visuals, ratings, and reviews for a more engaging shopping experience.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 def build_image_url(sub_cat: str, pid: str) -> str:
     label = urllib.parse.quote_plus(f"{sub_cat.title()} {pid}")
@@ -55,24 +65,45 @@ def stars(rating: float) -> str:
     return "★" * full + "☆" * (5 - full)
 
 
+def format_price(value: float) -> str:
+    return f"${value:,.2f}"
+
+
 def product_card(row: pd.Series, wide: bool = False):
     with st.container(border=True):
-        if "image_url" in row and pd.notna(row.get("image_url")):
-            if wide:
+        if wide:
+            if "image_url" in row and pd.notna(row.get("image_url")):
                 st.image(row["image_url"], use_column_width=True)
-            else:
-                st.image(row["image_url"], width=280)
+            st.markdown(f"### {row['name']}")
+            st.caption(f"{row['main_category']} › {row['sub_category']}")
+            st.write(
+                f"{stars(row['ratings'])}  {row['ratings']} "
+                f"({int(row['no_of_ratings'])} ratings)"
+            )
+            st.markdown(f"**Price:** {format_price(row['Price'])}")
+            if "similarity" in row and pd.notna(row.get("similarity")):
+                st.caption(f"Match score: {row['similarity']}")
+            st.write(f"_{row['Review']}_")
+            st.caption(f"Product ID: {row['ProductId']}")
+            return
 
-        st.markdown(f"**{row['name']}**")
-        st.caption(f"{row['main_category']} › {row['sub_category']}")
-        st.write(
-            f"{stars(row['ratings'])}  {row['ratings']} "
-            f"({int(row['no_of_ratings'])} ratings)"
-        )
-        st.markdown(f"### ${row['Price']:.2f}")
-        if "similarity" in row and pd.notna(row.get("similarity")):
-            st.caption(f"Match score: {row['similarity']}")
-        st.write(f"_{row['Review']}_")
+        left, right = st.columns([1, 2])
+        with left:
+            if "image_url" in row and pd.notna(row.get("image_url")):
+                st.image(row["image_url"], width=220)
+
+        with right:
+            st.markdown(f"### {row['name']}")
+            st.caption(f"{row['main_category']} › {row['sub_category']}")
+            st.write(
+                f"{stars(row['ratings'])}  {row['ratings']} "
+                f"({int(row['no_of_ratings'])} ratings)"
+            )
+            st.markdown(f"**{format_price(row['Price'])}**")
+            if "similarity" in row and pd.notna(row.get("similarity")):
+                st.caption(f"Match score: {row['similarity']}")
+            st.write(f"_{row['Review']}_")
+            st.caption(f"Product ID: {row['ProductId']}")
 
 
 def show_grid(df: pd.DataFrame, cols: int = 4):
