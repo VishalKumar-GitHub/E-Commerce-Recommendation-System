@@ -36,9 +36,10 @@ def build_image_url(sub_cat: str, pid: str) -> str:
     )
 
 
-def build_category_image_url(sub_cat: str) -> str:
+def build_category_image_url(sub_cat: str, pid: str) -> str:
     tag = urllib.parse.quote_plus(sub_cat.replace(" ", ","))
-    return f"https://loremflickr.com/400/300/{tag}"
+    seed = urllib.parse.quote_plus(str(pid))
+    return f"https://source.unsplash.com/400x300/?{tag}&sig={seed}"
 
 
 @st.cache_data(show_spinner=False)
@@ -60,12 +61,12 @@ def load_data() -> pd.DataFrame:
         )
         if generic_image.any():
             df.loc[generic_image, "image_url"] = df.loc[generic_image].apply(
-                lambda row: build_category_image_url(row["sub_category"]),
+                lambda row: build_category_image_url(row["sub_category"], row["ProductId"]),
                 axis=1,
             )
     if "image_url" not in df.columns:
         df["image_url"] = df.apply(
-            lambda row: build_image_url(row["sub_category"], row["ProductId"]),
+            lambda row: build_category_image_url(row["sub_category"], row["ProductId"]),
             axis=1,
         )
     return df
