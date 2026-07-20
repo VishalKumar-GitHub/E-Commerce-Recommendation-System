@@ -36,6 +36,11 @@ def build_image_url(sub_cat: str, pid: str) -> str:
     )
 
 
+def build_category_image_url(sub_cat: str) -> str:
+    tag = urllib.parse.quote_plus(sub_cat.replace(" ", ","))
+    return f"https://loremflickr.com/400/300/{tag}"
+
+
 @st.cache_data(show_spinner=False)
 def load_data() -> pd.DataFrame:
     data_path = LEGACY_DATA_PATH if os.path.exists(LEGACY_DATA_PATH) else DATA_PATH
@@ -48,6 +53,16 @@ def load_data() -> pd.DataFrame:
     df = pd.read_csv(data_path)
     if "image" in df.columns:
         df["image_url"] = df["image"]
+        generic_image = df["image_url"].astype(str).str.contains(
+            r"picsum\.photos|placehold\.co|dummyimage\.com|via\.placeholder\.com",
+            regex=True,
+            na=False,
+        )
+        if generic_image.any():
+            df.loc[generic_image, "image_url"] = df.loc[generic_image].apply(
+                lambda row: build_category_image_url(row["sub_category"]),
+                axis=1,
+            )
     if "image_url" not in df.columns:
         df["image_url"] = df.apply(
             lambda row: build_image_url(row["sub_category"], row["ProductId"]),
