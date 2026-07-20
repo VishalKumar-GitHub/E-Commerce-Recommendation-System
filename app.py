@@ -6,6 +6,7 @@ Deploy:        push to GitHub, connect the repo on share.streamlit.io
 from __future__ import annotations
 
 import os
+import urllib.parse
 
 import pandas as pd
 import streamlit as st
@@ -13,18 +14,35 @@ import streamlit as st
 from recommender import Recommender
 
 DATA_PATH = "data/products.csv"
+LEGACY_DATA_PATH = "products.csv"
 
 st.set_page_config(page_title="Product Recommender", page_icon="🛍️", layout="wide")
 
 
+def build_image_url(sub_cat: str, pid: str) -> str:
+    label = urllib.parse.quote_plus(f"{sub_cat.title()} {pid}")
+    return (
+        f"https://placehold.co/400x300/png?text={label}"
+        "&font=montserrat&bg=efefef&txt=333"
+    )
+
+
 @st.cache_data(show_spinner=False)
 def load_data() -> pd.DataFrame:
-    if not os.path.exists(DATA_PATH):
-        # first run on a fresh clone: generate the bundled sample data
+    data_path = LEGACY_DATA_PATH if os.path.exists(LEGACY_DATA_PATH) else DATA_PATH
+    if not os.path.exists(data_path):
         import generate_data
         os.makedirs("data", exist_ok=True)
         generate_data.build().to_csv(DATA_PATH, index=False)
-    return pd.read_csv(DATA_PATH)
+        data_path = DATA_PATH
+
+    df = pd.read_csv(data_path)
+    if "image_url" not in df.columns:
+        df["image_url"] = df.apply(
+            lambda row: build_image_url(row["sub_category"], row["ProductId"]),
+            axis=1,
+        )
+    return df
 
 
 @st.cache_resource(show_spinner=False)
