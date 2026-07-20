@@ -76,3 +76,12 @@ to a free-text query (search). Everything is cached with Streamlit's
 - Swap in your own catalog by replacing `data/products.csv` with a CSV that has
   the same columns (`ProductId, name, main_category, sub_category, ratings,
   no_of_ratings, Price, Review, text`).
+
+
+  ## About Me
+
+**Vishal Kumar**
+- [GitHub](https://github.com/VishalKumar-GitHub)
+
+📫 **Follow me** on [Xing](https://www.xing.com/profile/Vishal_Kumar055381/web_profiles?expandNeffi=true) | [LinkedIn](https://www.linkedin.com/in/vishal-kumar-819585275/)
+
