@@ -1,4 +1,5 @@
 # 🛍️ Product Recommendation System
+<img width="1200" height="400" alt="banner" src="https://github.com/user-attachments/assets/94821d38-0d70-498d-949b-a188642a9691" />
 
 A content-based product recommender built with **TF-IDF + cosine similarity**
 (scikit-learn) and a **Streamlit** front end. It ships with a self-contained
