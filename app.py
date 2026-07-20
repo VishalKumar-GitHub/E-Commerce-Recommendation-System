@@ -46,6 +46,8 @@ def load_data() -> pd.DataFrame:
         data_path = DATA_PATH
 
     df = pd.read_csv(data_path)
+    if "image" in df.columns:
+        df["image_url"] = df["image"]
     if "image_url" not in df.columns:
         df["image_url"] = df.apply(
             lambda row: build_image_url(row["sub_category"], row["ProductId"]),
