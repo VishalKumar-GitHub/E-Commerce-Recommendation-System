@@ -5,9 +5,17 @@ so the app has zero external dependencies and deploys with no setup.
 """
 import numpy as np
 import pandas as pd
+import urllib.parse
 
 RNG = np.random.default_rng(42)
 
+
+def build_image_url(sub_cat: str, pid: int) -> str:
+    label = urllib.parse.quote_plus(f"{sub_cat.title()} {pid}")
+    return (
+        f"https://placehold.co/400x300/png?text={label}"
+        "&font=montserrat&bg=efefef&txt=333"
+    )
 # (main_category, sub_category, [product name templates], [descriptor words])
 CATALOG = {
     "electronics": {
@@ -133,6 +141,7 @@ def build(n_users: int = 400) -> pd.DataFrame:
                         "Price": round(float(RNG.uniform(10, 300)), 2),
                         "Review": review,
                         "text": text,
+                        "image_url": build_image_url(sub_cat, pid),
                     })
     df = pd.DataFrame(rows)
     return df

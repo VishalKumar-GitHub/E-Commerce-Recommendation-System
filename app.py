@@ -1,4 +1,4 @@
-"""Streamlit product recommendation app (content-based, TF-IDF).
+streamlit run app.pystreamlit run app.py"""Streamlit product recommendation app (content-based, TF-IDF).
 
 Run locally:   streamlit run app.py
 Deploy:        push to GitHub, connect the repo on share.streamlit.io
@@ -37,12 +37,20 @@ def stars(rating: float) -> str:
     return "★" * full + "☆" * (5 - full)
 
 
-def product_card(row: pd.Series):
+def product_card(row: pd.Series, wide: bool = False):
     with st.container(border=True):
+        if "image_url" in row and pd.notna(row.get("image_url")):
+            if wide:
+                st.image(row["image_url"], use_column_width=True)
+            else:
+                st.image(row["image_url"], width=280)
+
         st.markdown(f"**{row['name']}**")
         st.caption(f"{row['main_category']} › {row['sub_category']}")
-        st.write(f"{stars(row['ratings'])}  {row['ratings']} "
-                 f"({int(row['no_of_ratings'])} ratings)")
+        st.write(
+            f"{stars(row['ratings'])}  {row['ratings']} "
+            f"({int(row['no_of_ratings'])} ratings)"
+        )
         st.markdown(f"### ${row['Price']:.2f}")
         if "similarity" in row and pd.notna(row.get("similarity")):
             st.caption(f"Match score: {row['similarity']}")
@@ -103,7 +111,7 @@ with tab_similar:
 
     st.divider()
     st.subheader("Selected product")
-    product_card(rec.get_product(pid))
+    product_card(rec.get_product(pid), wide=True)
 
     st.subheader("Recommended for you")
     recs = rec.recommend_by_product(pid, top_n=top_n, same_subcategory=same_sub)

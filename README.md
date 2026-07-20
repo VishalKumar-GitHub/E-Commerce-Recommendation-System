@@ -1,4 +1,4 @@
-# Product Recommendation System
+# 🛍️ Product Recommendation System
 
 A content-based product recommender built with **TF-IDF + cosine similarity**
 (scikit-learn) and a **Streamlit** front end. It ships with a self-contained
