@@ -21,8 +21,7 @@ st.set_page_config(page_title="Product Recommender", page_icon="🛍️", layout
 st.markdown(
     """
     <div style='padding:24px 32px; border-radius:24px; background:linear-gradient(135deg, #4b6cb7 0%, #182848 100%); color:white;'>
-        <h1 style='margin:0; font-size:2.6rem;'>Discover products with rich images</h1>
-        <p style='margin:12px 0 0; font-size:1.05rem; max-width:760px; line-height:1.5;'>Browse curated recommendations and product cards with attractive product visuals, ratings, and reviews for a more engaging shopping experience.</p>
+        <h1 style='margin:0; font-size:2.6rem;'>Vishal Kumar</h1>
     </div>
     """,
     unsafe_allow_html=True,
